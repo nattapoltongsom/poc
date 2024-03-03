@@ -1,0 +1,1240 @@
+openapi: 3.0.1
+info:
+  title: program-x API Documentation
+  description: This is program-x API
+  version: 0.0.1
+servers:
+  - url: https://dev-api-program-x.apps.kpc-dev.com
+    description: Development Server
+  - url: http://localhost:3000/
+    description: Local Server
+tags:
+  - name: customer
+    description: Everything about your customer
+  - name: product
+    description: Everything about your product
+  - name: marketing
+    description: Everything about your marketing
+  - name: authen
+    description: Everything about authen
+  - name: admin
+    description: Everything about authen
+  - name: user
+    description: Everything about user
+paths:
+  /customer:
+    get:
+      tags:
+        - customer
+      summary: Returns customer search.
+      security:
+        - bearerAuth: []
+      description: Get customer list
+      parameters:
+        - in: query
+          name: searchBy
+          schema:
+            type: string
+        - in: query
+          name: searchKeyword
+          schema:
+            type: string
+      responses:
+        200:
+          description: object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSearchResponse' 
+  /customer/{customerId}:
+    get:
+      tags:
+        - customer
+      summary: Returns customer by customer ID.
+      security:
+        - bearerAuth: []
+      description: Get customer list By ID
+      parameters:
+      - name: customerId
+        in: path
+        description: ID of customer to return
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: object.
+          content:
+            application/json:
+              schema:
+                $ref:  '#/components/schemas/CustomerDetailResponse'
+  /authen/login:
+    post:
+      tags:
+      - authen
+      summary: Login
+      operationId: LoginForm
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                username:
+                  type: string
+                  description: Username
+                password:
+                  type: string
+                  description: Password
+      responses:
+        200:
+          description: Invalid input
+          content: 
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/LoginResponse'
+  /marketing/campaign:
+    post:
+      tags:
+        - marketing
+      summary: Create a campaign.
+      operationId: createCampaign
+      description: Create a campaign.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: campaign name
+                description:
+                  type: string
+                  description: campaign name
+                organizationCode:
+                  type: string
+                  description: campaign name
+                startDate:
+                  type: string
+                  description: campaign name
+                endDate:
+                  type: string
+                  description: campaign name
+                status:
+                  type: string
+                  description: campaign name
+                  enum:
+                    - active
+                    - inactive
+                file:
+                  type: string
+                  format: binary
+                campaignType:
+                  type: string 
+                badgeName:
+                  type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+        '400':
+          description: Invalid input
+          content: {}
+      security:
+        - bearerAuth: []
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - marketing
+      summary: Return list of campiagn by lasted update.
+      description: Return list of campiagn by lasted update.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCampaignListResponse'
+  /marketing/campaign/active:
+    get:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      summary: Return list of campaign by orgnization code.
+      description: Return list of campaign by orgnization code.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/GetCampaignListResponse'
+  /marketing/campaign/{campaignId}:
+    get:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      summary: Return campaign detail by campaign ID.
+      description: Return campaign detail by campaign ID.
+      parameters:
+        - name: campaignId
+          in: path
+          description: ID of campaign to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCampaignListResponse'
+        '404':
+          description: campaign not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundReponse'
+    patch:
+      tags:
+      - marketing
+      security:
+      - bearerAuth: []
+      summary: Update campaign detail by campaign ID.
+      description: Update campaign detail by campaign ID.
+      parameters:
+      - name: campaignId
+        in: path
+        description: Campaign ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                  description: Campaign ID
+                name:
+                  type: string
+                  description: Name
+                startDate:
+                  type: integer
+                  description: Unix timestamp
+                endDate:
+                  type: integer
+                  description:  Unix timestamp
+                status:
+                  type: string
+                  description: Name
+                badgeName:
+                  type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+  /product:
+    get:
+      tags:
+      - product
+      security:
+        - bearerAuth: []
+      summary: Return product
+      parameters:
+      - name: search
+        in: query
+        description: search keyword
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: limit number of result
+        schema:
+          type: integer
+      - name: sortBy
+        in: query
+        description: sort by
+        schema:
+          type: string
+          enum:
+          - sale_price
+          - original_price
+          - barcode
+          - brand_name
+      - name: sortType
+        in: query
+        description: order by
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSearchResponse'
+        404:
+          description: campaign not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundReponse'
+  /product/{barcode}:
+    get:
+      tags:
+      - product
+      security:
+        - bearerAuth: []
+      summary: Return product search by barcode
+      parameters:
+      - name: barcode
+        in: path
+        description: barcode
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSearchBarcodeResponse'
+        404:
+          description: campaign not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundReponse'
+  /admin/redis:
+    get:
+      tags:
+      - admin
+      security:
+        - bearerAuth: []
+      summary: Return redis key
+      parameters:
+      - name: searchBy
+        in: query
+        description: search by
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+    delete:
+      tags:
+      - admin
+      security:
+        - bearerAuth: []
+      summary: Return redis key
+      parameters:
+      - name: searchBy
+        in: query
+        description: search by
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: integer
+  /users/me:
+    get:
+      tags:
+      - user
+      security:
+        - bearerAuth: []
+      summary: Return user profile
+      parameters:
+      - name: searchBy
+        in: query
+        description: search by
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+  /users/register:
+    post:
+      tags:
+      - user
+      security:
+        - bearerAuth: []
+      summary: Create account
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                username:
+                  type: string
+                  description: Username
+                password:
+                  type: string
+                  description: Password
+                roles:
+                  type: string
+                  enum: 
+                  - admin
+                  - superadmin
+                  description: Roles
+                firstname:
+                  type: string
+                  description: firstname
+                lastname:
+                  type: string
+                  description: lastname
+                branch:
+                  type: string
+                  description: branch
+                  enum:
+                  - siam
+                  - mahanakon
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+  /marketing/bank-partner:
+    post:
+      tags:
+        - marketing
+      summary: Create a bank partner.
+      operationId: createBankPartner
+      description: Create a campaign.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: bank name
+                description:
+                  type: string
+                  description: description
+                remark:
+                  type: string
+                  description: remark
+                url:
+                  type: string
+                  description: url
+                imageFile:
+                  type: string
+                  format: binary
+                  description: file type image
+                startDate:
+                  type: number
+                  description: start date period 
+                endDate:
+                  type: number
+                  description: start date period
+                status:
+                  type: string
+                  description: status
+                  enum:
+                    - active
+                    - inactive
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+        '400':
+          description: Invalid input
+          content: {}
+      security:
+        - bearerAuth: []
+    get:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      summary: Return list of bank partnet.
+      description: Return list of bank partnet.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/BankPartnerResponse'
+  /marketing/bank-partner/{bankPartnerId}:
+    patch:
+      tags:
+      - marketing
+      security:
+      - bearerAuth: []
+      summary: Update bank partner detail by bank partner ID.
+      description: Update bank partner detail by bank partner ID.
+      parameters:
+      - name: bankPartnerId
+        in: path
+        description: BankPartnerID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: bank name
+                description:
+                  type: string
+                  description: description
+                remark:
+                  type: string
+                  description: remark
+                url:
+                  type: string
+                  description: url
+                imageFile:
+                  type: string
+                  format: binary
+                  description: file type image
+                startDate:
+                  type: number
+                  description: start date period 
+                endDate:
+                  type: number
+                  description: start date period
+                status:
+                  type: string
+                  description: status
+                  enum:
+                    - active
+                    - inactive
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+    get:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      parameters:
+      - name: bankPartnerId
+        in: path
+        description: BankPartnerID
+        required: true
+        schema:
+          type: string
+      summary: Return bank partnet.
+      description: Return bank partnet.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BankPartnerResponse'
+    delete:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      summary: Deleted bank partnet.
+      description: Return list of bank partnet.
+      parameters:
+      - name: bankPartnerId
+        in: path
+        description: BankPartnerID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+  /marketing/coupon:
+    post:
+      tags:
+        - marketing
+      summary: Create a coupon.
+      operationId: createCoupon
+      description: Create a coupon.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: bank name
+                description:
+                  type: string
+                  description: description
+                remark:
+                  type: string
+                  description: remark
+                termCondition:
+                  type: string
+                  description: remark
+                imageFile:
+                  type: string
+                  format: binary
+                  description: file type image
+                startDate:
+                  type: number
+                  description: start date period 
+                endDate:
+                  type: number
+                  description: start date period
+                status:
+                  type: string
+                  description: status
+                  enum:
+                    - active
+                    - inactive
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+        '400':
+          description: Invalid input
+          content: {}
+      security:
+        - bearerAuth: []
+    get:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      summary: Return list of coupon.
+      description: Return list of coupon.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/CouponResponse'
+  /marketing/coupon/{couponId}:
+    patch:
+      tags:
+      - marketing
+      security:
+      - bearerAuth: []
+      summary: Update coupon detail by coupon ID.
+      description: Update coupon detail by coupon ID.
+      parameters:
+      - name: couponId
+        in: path
+        description: coupon ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: bank name
+                description:
+                  type: string
+                  description: description
+                remark:
+                  type: string
+                  description: remark
+                termCondition:
+                  type: string
+                  description: term and condition
+                imageFile:
+                  type: string
+                  format: binary
+                  description: file type image
+                startDate:
+                  type: number
+                  description: start date period 
+                endDate:
+                  type: number
+                  description: start date period
+                status:
+                  type: string
+                  description: status
+                  enum:
+                    - active
+                    - inactive
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+    get:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      parameters:
+      - name: couponId
+        in: path
+        description: coupon ID
+        required: true
+        schema:
+          type: string
+      summary: Return coupon.
+      description: Return coupon.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+    delete:
+      tags:
+        - marketing
+      security:
+        - bearerAuth: []
+      summary: Deleted coupon.
+      description: Return coupon.
+      parameters:
+      - name: couponId
+        in: path
+        description: Coupon ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSuccessResponse'
+  /users/sales-count:
+    post: 
+      tags:
+      - user
+      summary: insert closing salse count.
+      operationId: createCoupon.
+      description: insert closing salse count.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSuccessResponse'
+        '400':
+          description: Invalid input
+          content: {}
+      security:
+        - bearerAuth: []
+    get:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      summary: Return closing sale cout for current month.
+      description: Return closing sale cout for current month.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ClosingSaleResponse'
+components:
+  schemas:
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        organizationCode:
+          type: string
+          enum:
+            - beauty
+            - lifestyle
+        startDate:
+          type: integer
+          format: int32
+          description: unix time stamp
+        endDate:
+          type: integer
+          format: int32
+          description: unix time stamp
+        status:
+          type: string
+          description: campaign status
+          enum:
+            - active
+            - inactive
+        campaignType:
+          type: string 
+        badgeName:
+          type: string
+    GetCampaignListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+    CampaignSuccessResponse:
+      type: object
+      properties:
+        id:
+          type: string
+    UserSuccessResponse:
+      type: object
+      properties:
+        id:
+          type: string
+    NotFoundReponse:
+      type: object
+      properties:
+        domain:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+        id:
+          type: string
+    BadRequestResponse:
+      type: object
+      properties:
+        domain:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+        fields:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties: 
+            id:
+              type: string
+            token:
+              type: string
+    MemberLevel:
+      type: object
+      properties:
+        code:
+          type: string
+        name: 
+          type: string
+        expiryDate:
+          type: integer
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName: 
+          type: string
+        lastName: 
+          type: string
+        email:
+          type: string
+        birthdate:
+          type: string
+        mobileNumber: 
+          type: string
+        isMobileNumberActive:
+          type: string
+        registerChannel: 
+          type: string
+        point: 
+          type: string
+        memberLevel:
+          $ref: '#/components/schemas/MemberLevel'
+        createDate:
+          type: string
+    ProductImage:
+      type: object
+      properties:
+        filePath: 
+          type: string
+        baseUri:
+          type: string
+        hash: 
+          type: string
+        version:
+          type: string
+    Product:
+      type: object
+      properties:
+        sku:
+          type: string
+        productName:
+          type: string
+        quantity:
+          type: integer
+        image:
+          $ref: '#/components/schemas/ProductImage'
+      
+    OrderHistory:
+      type: object
+      properties:
+        orderReferenceId: 
+          type: string
+        subOrderReferenceId: 
+          type: string
+        branch:
+          type: string
+        shippingType:
+          type: string
+        createdOn:
+          type: integer
+        itemCount:
+          type: integer
+        grandTotal:
+          type: integer
+        subOrderStatus: 
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    OrderHistoryAmount:
+      type: object
+      properties:
+        sku: 
+          type: string
+        productName:
+          type: string
+        price:
+          type: integer
+        amount: 
+          type: integer
+        image:
+          $ref: '#/components/schemas/ProductImage'
+        perBranch:
+          type: object 
+          properties:
+            online:
+              type: integer
+            mahanakhon:
+              type: integer
+            siam:
+              type: integer
+        latestPurchaseDate:
+          type: integer
+    OrderHistoryFrequency:
+      type: object
+      properties:
+        sku: 
+          type: string
+        productName:
+          type: string
+        price:
+          type: integer
+        frequency: 
+          type: integer
+        image:
+          $ref: '#/components/schemas/ProductImage'
+        perBranch:
+          type: object 
+          properties:
+            online:
+              type: integer
+            mahanakhon:
+              type: integer
+            siam:
+              type: integer
+        latestPurchaseDate:
+          type: integer
+    CustomerDetailResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            customer:
+              $ref: '#/components/schemas/Customer'
+            orderHistoryList:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderHistory'
+            orderHistoryAmount:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderHistoryAmount'
+            orderHistoryFrequency:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderHistoryFrequency'
+    CustomerSearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              firstName: 
+                type: string
+              lastName: 
+                type: string
+              email:
+                type: string
+              mobileNumber: 
+                type: string
+              isMobileNumberActive:
+                type: string
+              memberLevel:
+                $ref: '#/components/schemas/MemberLevel'
+    ProductSearch:
+      type: object
+      properties:
+        bracode:
+          type: string
+        sku:
+          type: string
+        productName:
+          type: string
+        image:
+          $ref: '#/components/schemas/ProductImage'
+        brandCode:
+          type: string
+        brandName:
+          type: string
+        orginalPrice:
+          type: integer
+        salePrice:
+          type: integer
+    ProductSearchBarcode:
+      type: object
+      properties:
+        bracode:
+          type: string
+        sku:
+          type: string
+        url:
+          type: string
+        productName:
+          type: string
+        image:
+          $ref: '#/components/schemas/ProductImage'
+        brandCode:
+          type: string
+        brandName:
+          type: string
+        orginalPrice:
+          type: integer
+        salePrice:
+          type: integer
+        limitOnTop: 
+          type: string
+        organizationCode:
+          enum:
+            - beauty
+            - lifestyle
+        campaignName:
+          type: string
+        campaignDescription:
+          type: string
+        remark:
+          type: string
+        stockOnline:
+          type: object
+          properties:
+            delivery:
+              type: integer
+            pickup:
+              type: integer
+        stockOffline:
+          type: object
+          properties:
+            mahanakhon:
+              type: integer
+            siam:
+              type: integer
+    ProductSearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSearch'
+    ProductSearchBarcodeResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSearchBarcode'
+    UserProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        branch:
+          type: string
+          enum:
+          - siam
+          - mahanakon
+        roles:
+          type: array
+          items: 
+            type: string
+            enum:
+            - admin
+            - useradmin
+    BankPartnerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+           type: string
+        descrtiption:
+          type: string
+        remark:
+          type: string
+        url:
+          type: string
+        image:
+          type: string
+        startDate:
+          type: string
+        endDate: 
+          type: string
+        status:
+          type: string
+          description: campaign status
+          enum:
+            - active
+            - inactive
+    CouponResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+           type: string
+        descrtiption:
+          type: string
+        remark:
+          type: string
+        termCondition:
+          type: string
+        image:
+          type: string
+        startDate:
+          type: string
+        endDate: 
+          type: string
+        status:
+          type: string
+          description: campaign status
+          enum:
+            - active
+            - inactive
+    ClosingSaleResponse:
+      type: object
+      properties: 
+        salesCount:
+          type: number
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
