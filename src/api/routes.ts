@@ -2,7 +2,8 @@ import { Router as ExpressRouter, Response } from "express";
 
 import Container, { ProviderName } from "../infrastructures/di/container";
 import authenRole from "./middlewares/authen";
-import { MarketingController } from "./controllers/marketing";
+import redis from "./middlewares/redis";
+import { UserController } from "./controllers/user";
 
 export interface Router {
   route(): ExpressRouter;
@@ -10,8 +11,9 @@ export interface Router {
 
 const registedRouter = (container: Container): ExpressRouter => {
   const router = ExpressRouter({ caseSensitive: false });
-  const marketingController: MarketingController = container.getInstance(
-    ProviderName.MARKETING_CONTROLLER
+
+  const userController: UserController = container.getInstance(
+    ProviderName.USER_CONTROLLER
   );
 
   router.get("/health", (_, res: Response) => res.sendStatus(200));
@@ -24,10 +26,8 @@ const registedRouter = (container: Container): ExpressRouter => {
 
   // admin
   router.use(authenRole(container, ["admin"]));
-
-  // super-admin
-  // router.use(authenRole(container, ['super-admin']))
-  router.use("/marketing", marketingController.route());
+  router.use(redis(container));
+  router.use("/users", userController.route());
 
   return router;
 };

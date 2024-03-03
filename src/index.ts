@@ -1,46 +1,48 @@
-import "source-map-support/register";
-import "express-async-errors";
+import 'source-map-support/register'
+import 'express-async-errors'
 
-import express, { NextFunction, Request, Response } from "express";
-import morgan from "morgan";
-import swaggerUi from "swagger-ui-express";
-import YAML from "yamljs";
-import path from "path";
-import cors from "cors";
+import express, { NextFunction, Request, Response } from 'express'
+import morgan from 'morgan'
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yamljs'
+import path from 'path'
+import cors from 'cors'
 
-import router from "./api/routes";
-import errorHandler from "./api/middlewares/error-handler";
+import router from './api/routes'
+import errorHandler from './api/middlewares/error-handler'
 
-import Container from "./infrastructures/di/container";
+import { initializeAppInsight, setAppInsightContext } from './api/middlewares/insight'
+import Container from './infrastructures/di/container'
 
-const swaggerDocument = YAML.load(path.resolve(__dirname, "swagger.yaml"));
-const app = express();
+const swaggerDocument = YAML.load(path.resolve(__dirname, 'swagger.yaml'))
+const app = express()
 
 const preload = async () => {
-  return {
-    container: await Container.initialize(),
-  };
-};
+    return {
+        container: await Container.initialize(),
+    }
+}
 
 preload().then(({ container }) => {
-  app.use(cors());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(morgan("dev"));
-  app.use(
-    "/docs",
-    (_: Request, res: Response, next: NextFunction) => {
-      if (process.env.NODE_ENV !== "production") {
-        next();
-      } else {
-        res.sendStatus(404);
-      }
-    },
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument)
-  );
-  app.use(router(container));
-  app.use(errorHandler());
-});
+    app.use(setAppInsightContext(initializeAppInsight(container)))
+    app.use(cors())
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }))
+    app.use(morgan('dev'))
+    app.use(
+        '/docs',
+        (_: Request, res: Response, next: NextFunction) => {
+            if (process.env.NODE_ENV !== 'production') {
+                next()
+            } else {
+                res.sendStatus(404)
+            }
+        },
+        swaggerUi.serve,
+        swaggerUi.setup(swaggerDocument)
+    )
+    app.use(router(container))
+    app.use(errorHandler())
+})
 
-export default app;
+export default app
