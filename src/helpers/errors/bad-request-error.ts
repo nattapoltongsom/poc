@@ -7,7 +7,7 @@ export interface BadRequestErrorMap {
     domain: Domain
     codeMessage: ErrorCodeMessage
     message: string
-    fields?: ErrorField[]
+    fields: ErrorField[]
     error?: Error
 }
 
@@ -32,7 +32,7 @@ export class BadRequestError extends CustomError<BadRequestResponse> {
         this._domain = errorMap.domain
         this._code = errorMap.codeMessage
         this._message = errorMap.message || ''
-        this._fields = errorMap.fields || []
+        this._fields = errorMap.fields
     }
 
     public getSchema(): BadRequestResponse {

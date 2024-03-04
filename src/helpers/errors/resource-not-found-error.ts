@@ -1,4 +1,5 @@
 import HttpStatusCode from 'http-status-codes'
+
 import { Domain } from '../../domain'
 import { BaseErrorResponse, CustomError } from './custom-error'
 import { ErrorCodeMessage } from './error-code-message'
@@ -10,6 +11,7 @@ export interface ResourceNotFoundErrorMap {
     id?: string
     error?: Error
 }
+
 interface ResourceNotFoundResponse extends BaseErrorResponse {
     id?: string
 }

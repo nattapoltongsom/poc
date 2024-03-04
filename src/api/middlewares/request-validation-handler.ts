@@ -34,8 +34,6 @@ export default (validationSchema: expressValidation.schema, domain: Domain) => {
                     fields: fields,
                 })
             }
-
-            next(error)
         },
     ]
 }

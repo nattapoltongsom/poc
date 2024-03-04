@@ -1,6 +1,6 @@
 {
     "watch": ["src"],
     "ext": "ts,tsx,yaml",
-    "exec": "tsc --noEmit && TZ='UTC' ts-node ./src/cmd/start",
+    "exec": "tsc --noEmit && ts-node ./src/cmd/start",
     "ignore": ["src/**/*.test.ts", "node_modules", "dist"]
 }
