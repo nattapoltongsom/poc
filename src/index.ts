@@ -24,7 +24,6 @@ const preload = async () => {
 
 preload().then(({ container }) => {
   app.use(cors());
-  app.use(multer().none());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan("dev"));

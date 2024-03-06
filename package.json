@@ -57,6 +57,7 @@
     "qs": "~6.10.1",
     "swagger-ui-express": "~4.1.6",
     "uuid": "~8.3.2",
+    "xlsx": "^0.18.5",
     "yamljs": "~0.3.0"
   },
   "devDependencies": {
