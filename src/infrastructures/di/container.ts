@@ -24,50 +24,12 @@ export default class Container {
 
     // Infrastructure
     const configService = new ConfigService();
-    //const mongoClient = await new MongoDBClient(configService).getClient()
-    //const db = new Database(configService, mongoClient)
-
-    //const logAdaptor = new LogAdaptor(db)
-    // const scgAdaptor = new ScgAdaptor(configService.getCourierConfig(), logAdaptor)
-    // const kerryAdaptor = new KerryAdaptor(configService.getCourierConfig(), logAdaptor)
-    // const nodeMailerEmailAdapter = new NodeMailerEmailAdapter(configService.getNotificationConfig())
-
-    // const ssoAdaptor = new SsoAdaptor(configService.getSsoPlatformConfig(), configService.getSsoConfig())
-    // const firsterAdaptor = new FirsterAdaptor(configService.getPlatformConfig(), ssoAdaptor, logAdaptor)
-
-    // Repository
-    // const orderRepository = new OrderMongoRepository(db)
-
-    // Service
-    // const orderService = new OrderService(
-    //     orderRepository,
-    //     scgAdaptor,
-    //     nodeMailerEmailAdapter,
-    //     logAdaptor,
-    //     firsterAdaptor,
-    //     kerryAdaptor
-    // )
 
     // Controller
-    // const orderBofController = new OrderController(orderService)
-    // const logisticsController = new LogisticsController(scgAdaptor, logAdaptor)
-    // const ssoController = new SsoController(ssoAdaptor)
     const testController = new TestController();
 
     registerInstance(ProviderName.CONFIG_SERVICE, configService);
-    // registerInstance(ProviderName.ORDER_CONTROLLER, orderBofController)
-    // registerInstance(ProviderName.LOGISTICS_CONTROLLER, logisticsController)
     registerInstance(ProviderName.TEST_CONTROLLER, testController);
-
-    // registerInstance(ProviderName.SSO_CONTROLLER, ssoController)
-    // registerInstance(ProviderName.ORDER_SERVICE, orderService)
-    // registerInstance(ProviderName.ORDER_MONGO_REPOSITORY, orderRepository)
-    // registerInstance(ProviderName.SCG_ADAPTER, scgAdaptor)
-    // registerInstance(ProviderName.KERRY_ADAPTER, kerryAdaptor)
-    // registerInstance(ProviderName.NODE_MAILER_ADAPTER, nodeMailerEmailAdapter)
-    //registerInstance(ProviderName.LOG_ADAPTER, logAdaptor)
-    // registerInstance(ProviderName.SSO_ADAPTER, ssoAdaptor)
-    //registerInstance(ProviderName.FIRSTER_ADAPTER, firsterAdaptor)
 
     return new Container(instance);
   }

@@ -1,11 +1,11 @@
 {
-  "name": "kpc-booking-logistics-api",
+  "name": "kpc-payment-plan-transform-data-api",
   "version": "1.0.1",
   "engines": {
     "node": "14.16.0",
     "npm": ">=6.14"
   },
-  "description": "kpc-booking-logistics",
+  "description": "kpc-payment-plan-transform-data-api",
   "scripts": {
     "dev": "nodemon",
     "prepare": "husky install",
@@ -26,14 +26,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kingpowerclick/kpc-booking-logistics-api.git"
+    "url": "git+https://github.com/kingpowerclick/kpc-payment-plan-transform-data-api.git"
   },
   "author": "birdbida",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kingpowerclick/kpc-booking-logistics-api/issues"
+    "url": "https://github.com/kingpowerclick/kpc-payment-plan-transform-data-api/issues"
   },
-  "homepage": "https://github.com/kingpowerclick/kpc-booking-logistics-api#readme",
+  "homepage": "https://github.com/kingpowerclick/kpc-payment-plan-transform-data-api#readme",
   "dependencies": {
     "@types/multer": "~1.4.7",
     "applicationinsights": "~2.1.6",

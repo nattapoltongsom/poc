@@ -12,14 +12,3 @@ const XLXS_TYPE =
 export const enum FileFieldName {
   IMAGE_FILE = "imageFile",
 }
-
-const validateErrorMulter = (error: Error, domain: Domain) => {
-  if (error instanceof MulterError) {
-    throw new BadRequestError({
-      domain: domain,
-      codeMessage: ErrorCodeMessage.INVALID_INPUT,
-      message: error.code,
-      fields: [{ field: error.field as string, error: error.code }],
-    });
-  }
-};
